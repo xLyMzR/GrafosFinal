@@ -8,17 +8,22 @@ import java.awt.font.GraphicAttribute;
 
 public class App {
 
-    private static IGrafo grafo = new MatrizAdj(2, true);
+    private static final IGrafo grafo = new MatrizAdj(3, true);
 
     public static void main(String[] args) {
-        Aresta e = new Aresta(1, 0);
-        Aresta e2 = new Aresta(0, 1);;
-//        Add arestas ao Grafo
-        grafo.addAresta(e.getVerticeA(), e.getVerticeB());
-        grafo.addAresta(e2.getVerticeA(), e2.getVerticeB());
 
-        System.out.println(grafo.isVerticeIncidente(e, 1));
-        grafo.getArestas().stream().map(x -> x.toString()).forEach(System.out::println);
+        for(int i =0; i<grafo.getTotalVertices(); i++){
+            for(int j =1; j<grafo.getTotalVertices(); j++){
+                if(i!=j) {
+                    grafo.addAresta(i, j);
+                    grafo.addAresta(j, i);
+                }
+                }
+
+        }
+
+        /*System.out.println(grafo.isVerticeIncidente(e, 1));
+        grafo.getArestas().stream().map(x -> x.toString()).forEach(System.out::println);*/
 
         //Buscar aresta / Adjacencia de vertices
      //   System.out.println(grafo.isVerticesAdjacentes(2 ,1));

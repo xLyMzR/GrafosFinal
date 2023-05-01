@@ -3,19 +3,16 @@ package REPRESENTACOES;
 import ELEMENTOS.Aresta;
 import ELEMENTOS.Vertice;
 import INTERFACE.IGrafo;
-
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class MatrizAdj implements IGrafo {
     private int numTotalVertices;
     private int numTotalArestas;
     private boolean isCompleto;
-    private boolean isDirecionado=false;
-    private double[][] adjacencyMatrix;
-    private HashMap<Integer, Vertice> mapaVertices;
-    private HashSet<Aresta> arestas;
-    private int nextVertexId;
+    private final boolean isDirecionado;
+    private final double[][] adjacencyMatrix;
+    private final HashMap<Integer, Vertice> mapaVertices;
+    private final HashSet<Aresta> arestas;
 
     public MatrizAdj(int i, boolean isDirecionado) {
         numTotalArestas =0;
@@ -32,9 +29,10 @@ public class MatrizAdj implements IGrafo {
             mapaVertices.put(numTotalVertices, nv);
             numTotalVertices++;
         }
-    };
+    }
     @Override
     public void addAresta(int v1, int v2) {
+        if(v1 >= numTotalVertices || v2 >= numTotalVertices){return;}
         try {
         Aresta nE = new Aresta(v1, v2);
         if (!isDirecionado) {
@@ -59,6 +57,9 @@ public class MatrizAdj implements IGrafo {
     }
     @Override
     public boolean isCompleto() {
+        if (isCompleto){
+            return true;
+        }
         if (isDirecionado()) {
             // Se o grafo é direcionado, verifica se todos os vértices possuem aresta de entrada e de saída
             int j =0;
@@ -74,26 +75,17 @@ public class MatrizAdj implements IGrafo {
                 }
                 j++;
             }
+            this.isCompleto= true;
             return true; // Se todos os pares de vértices possuírem as duas arestas, o grafo é completo
         } else {
             // Se o grafo é não-direcionado, verifica se todos os vértices possuem arestas com todos os outros vértices
             int numVertices = mapaVertices.size();
             int numArestas = arestas.size();
             int numArestasEsperadas = numVertices * (numVertices - 1) / 2;
-            return numArestas == numArestasEsperadas; // Se o número de arestas é igual ao número esperado, o grafo é completo
+            boolean completo =  numArestas == numArestasEsperadas; // Se o número de arestas é igual ao número esperado, o grafo é completo
+            this.isCompleto = completo;
+            return completo;
         }
-    }
-
-    public List<Aresta> getArestasSaindoDe(int vertice) {
-        List<Aresta> arestasSaindoDe = new ArrayList<>();
-
-        for (Aresta aresta : arestas) {
-            if (aresta.getVerticeA() == vertice) {
-                arestasSaindoDe.add(aresta);
-            }
-        }
-
-        return arestasSaindoDe;
     }
 
     @Override
@@ -157,9 +149,9 @@ public class MatrizAdj implements IGrafo {
     @Override
     public void ponderarAresta(int va, int vb, int peso) {
         // Verifica se o grafo é direcionado ou não
+        Aresta arestaDireta = new Aresta(va, vb);
         if (isDirecionado()) {
             // Se o grafo é direcionado, basta atualizar o peso da aresta direta (se ela existir)
-            Aresta arestaDireta = new Aresta(va, vb);
             if (arestas.contains(arestaDireta)) {
                 arestas.stream().filter(a -> a.equals(arestaDireta)).findFirst().ifPresent(a -> a.setPeso(peso));
             } else {
@@ -167,7 +159,6 @@ public class MatrizAdj implements IGrafo {
             }
         } else {
             // Se o grafo é não-direcionado, é preciso atualizar o peso em ambas as direções caso existir.
-            Aresta arestaDireta = new Aresta(va, vb);
             Aresta arestaInversa = new Aresta(vb, va);
             boolean encontrouDireta = false;
             boolean encontrouInversa = false;
@@ -251,9 +242,9 @@ public class MatrizAdj implements IGrafo {
     @Override
     public void rotularAresta(int va, int vb, String rotulo) {
         // Verifica se o grafo é direcionado ou não
+        Aresta arestaDireta = new Aresta(va, vb);
         if (isDirecionado()) {
             // Se o grafo é direcionado, basta atualizar o peso da aresta direta (se ela existir)
-            Aresta arestaDireta = new Aresta(va, vb);
             if (arestas.contains(arestaDireta)) {
                 arestas.stream().filter(a -> a.equals(arestaDireta)).findFirst().ifPresent(a -> a.setRotulo(rotulo));
             } else {
@@ -261,7 +252,6 @@ public class MatrizAdj implements IGrafo {
             }
         } else {
             // Se o grafo é não-direcionado, é preciso atualizar o peso em ambas as direções caso existir.
-            Aresta arestaDireta = new Aresta(va, vb);
             Aresta arestaInversa = new Aresta(vb, va);
             boolean encontrouDireta = false;
             boolean encontrouInversa = false;
