@@ -4,25 +4,28 @@ import ELEMENTOS.Aresta;
 import ELEMENTOS.Vertice;
 import INTERFACE.IGrafo;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
 
-public class MatrizAdj implements IGrafo {
+public class ListaAdj implements IGrafo {
+
     private int numTotalVertices;
     private int numTotalArestas;
     private boolean isCompleto;
     private final boolean isDirecionado;
-    private final double[][] adjacencyMatrix;
+    private final List<List<Integer>> adjacencyList;
     private final HashMap<Integer, Vertice> mapaVertices;
     private final HashSet<Aresta> arestas;
 
-    public MatrizAdj(int i, boolean isDirecionado) {
+    public ListaAdj(int i, boolean isDirecionado) {
         numTotalArestas = 0;
         numTotalVertices = 0;
         this.isDirecionado = isDirecionado;
-        this.adjacencyMatrix = new double[i][i];
         mapaVertices = new HashMap<>();
         arestas = new HashSet<>();
-
+        this.adjacencyList = new ArrayList<>(i);
         inicializarVertices(i);
     }
 
@@ -31,7 +34,9 @@ public class MatrizAdj implements IGrafo {
             Vertice nv = new Vertice();
 
             mapaVertices.put(numTotalVertices, nv);
+
             numTotalVertices++;
+            adjacencyList.add(new ArrayList<>());
         }
     }
 
@@ -40,27 +45,25 @@ public class MatrizAdj implements IGrafo {
         if (v1 >= numTotalVertices || v2 >= numTotalVertices) {
             return;
         }
-        try {
-            Aresta nE = new Aresta(v1, v2);
-            if (!isDirecionado) {
-                // Adicionar a aresta em grafos não-direcionados
-                Aresta nEInv = new Aresta(v2, v1);
-                if (!arestas.contains(nE) && !arestas.contains(nEInv)) {
-                    arestas.add(nE);
-                    adjacencyMatrix[v1][v2] = 1;
-                    adjacencyMatrix[v2][v1] = 1;
-                    numTotalArestas++;
-                }
-            } else {
-                // Adicionar a aresta em grafos direcionados
-                if (!arestas.contains(nE)) {
-                    arestas.add(nE);
-                    adjacencyMatrix[v1][v2] = 1;
-                    numTotalArestas++;
-                }
+
+        Aresta nE = new Aresta(v1, v2);
+
+        if (!isDirecionado) {
+            // Adicionar a aresta em grafos não-direcionados
+            Aresta nEInv = new Aresta(v2, v1);
+            if (!arestas.contains(nE) && !arestas.contains(nEInv)) {
+                arestas.add(nE);
+                adjacencyList.get(v1).add(v2);
+                adjacencyList.get(v2).add(v1);
+                numTotalArestas++;
             }
-        } catch (IndexOutOfBoundsException | NullPointerException e) {
-            System.out.println("Vertices Invalidos!");
+        } else {
+            // Adicionar a aresta em grafos direcionados
+            if (!arestas.contains(nE)) {
+                arestas.add(nE);
+                adjacencyList.get(v1).add(v2);
+                numTotalArestas++;
+            }
         }
     }
 
@@ -98,27 +101,6 @@ public class MatrizAdj implements IGrafo {
     }
 
     @Override
-    public boolean isRegular() {
-        int grau = -1; // inicializa o grau com -1 para o primeiro vértice encontrado
-        for (int i = 0; i < numTotalVertices; i++) {
-            int grauAtual = 0;
-            // Calcula o grau do vértice atual
-            for (int j = 0; j < numTotalVertices; j++) {
-                int finalI = i;
-                int finalJ = j;
-                grauAtual += isDirecionado() ? (int) arestas.stream().filter(a -> a.getVerticeA() == finalI && a.getVerticeB() == finalJ).count() : isVerticesAdjacentes(i, j) ? 1 : 0;
-            }
-            // Verifica se o grau atual é igual ao grau do primeiro vértice encontrado
-            if (grau == -1) {
-                grau = grauAtual;
-            } else if (grau != grauAtual) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    @Override
     public boolean isDirecionado() {
         return this.isDirecionado;
     }
@@ -136,12 +118,13 @@ public class MatrizAdj implements IGrafo {
     @Override
     public boolean hasAresta(int v1, int v2) {
         try {
+
             if (isDirecionado) {
-                if (adjacencyMatrix[v1][v2] == 1) {
-                    return true;
-                }
+                return adjacencyList.get(v1).contains(v2);
             }
-            return adjacencyMatrix[v1][v2] == 1 && adjacencyMatrix[v2][v1] == 1;
+
+            return adjacencyList.get(v1).contains(v2) || adjacencyList.get(v2).contains(v1);
+
         } catch (NullPointerException | IndexOutOfBoundsException e) {
             return false;
         }
@@ -166,6 +149,7 @@ public class MatrizAdj implements IGrafo {
     public void ponderarAresta(int va, int vb, int peso) {
         // Verifica se o grafo é direcionado ou não
         Aresta arestaDireta = new Aresta(va, vb);
+
         if (isDirecionado()) {
             // Se o grafo é direcionado, basta atualizar o peso da aresta direta (se ela existir)
             if (arestas.contains(arestaDireta)) {
@@ -198,65 +182,13 @@ public class MatrizAdj implements IGrafo {
     }
 
     @Override
-    public void removerAresta(int va, int vB) {
-        try {
-            if (isDirecionado()) {
-                adjacencyMatrix[va][vB] = 0;
-                arestas.remove(new Aresta(va, vB));
-                return;
-            }
-            adjacencyMatrix[va][vB] = 0;
-            adjacencyMatrix[vB][va] = 0;
-            this.arestas.remove(new Aresta(va, vB));
-            numTotalArestas--;
-        } catch (IndexOutOfBoundsException | NullPointerException e) {
-            System.out.println("Aresta não existe");
+    public void rotularVertice(int v, String rotulo) {
+        // verifica se o vértice existe no grafo
+        if (!mapaVertices.containsKey(v)) {
+            throw new IllegalArgumentException("O vértice " + v + " não existe no grafo.");
         }
-    }
-
-    public boolean isVerticesAdjacentes(int v1, int v2) {
-        for (int i = 0; i < adjacencyMatrix.length; i++) {
-            for (int j = 0; j < adjacencyMatrix.length; j++) {
-                if (adjacencyMatrix[i][j] == 1 && ((i == v1 && j == v2) || (i == v2 && j == v1))) {
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
-
-    @Override
-    public boolean isArestasAdjacentes(Aresta a, Aresta b) {
-        int v1 = a.getVerticeA();
-        int v2 = a.getVerticeB();
-        int w1 = b.getVerticeA();
-        int w2 = b.getVerticeB();
-        boolean adjV1W1 = isVerticesAdjacentes(v1, w1);
-        boolean adjV1W2 = isVerticesAdjacentes(v1, w2);
-        boolean adjV2W1 = isVerticesAdjacentes(v2, w1);
-        boolean adjV2W2 = isVerticesAdjacentes(v2, w2);
-        return (adjV1W1 && adjV2W2) || (adjV1W2 && adjV2W1);
-    }
-
-    @Override
-    public boolean isVerticeIncidente(Aresta e, int v) {
-        if (!this.isDirecionado) {
-            System.out.println("Método disponivel somente em grafos direcionados");
-            return false;
-        }
-        for (Aresta x : arestas) {
-            if (x.equals(e)) {
-                if (e.getVerticeB() == x.getVerticeB()) {
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
-
-    @Override
-    public HashSet<Aresta> getArestas() {
-        return arestas;
+        // atualiza o peso do vértice
+        mapaVertices.get(v).setRotulo(rotulo);
     }
 
     @Override
@@ -295,12 +227,86 @@ public class MatrizAdj implements IGrafo {
     }
 
     @Override
-    public void rotularVertice(int v, String rotulo) {
-        // verifica se o vértice existe no grafo
-        if (!mapaVertices.containsKey(v)) {
-            throw new IllegalArgumentException("O vértice " + v + " não existe no grafo.");
+    public void removerAresta(int va, int vB) {
+        try {
+            if (isDirecionado()) {
+                adjacencyList.get(va).remove(vB);
+                arestas.remove(new Aresta(va, vB));
+                return;
+            }
+
+            adjacencyList.get(va).remove(vB);
+            adjacencyList.get(vB).remove(va);
+
+            this.arestas.remove(new Aresta(va, vB));
+            numTotalArestas--;
+
+        } catch (IndexOutOfBoundsException | NullPointerException e) {
+            System.out.println("Aresta não existe");
         }
-        // atualiza o peso do vértice
-        mapaVertices.get(v).setRotulo(rotulo);
+    }
+
+    @Override
+    public boolean isVerticesAdjacentes(int v1, int v2) {
+        if (this.isDirecionado) {
+            return adjacencyList.get(v1).contains(v2);
+        } else {
+            return adjacencyList.get(v1).contains(v2) || adjacencyList.get(v2).contains(v1);
+        }
+    }
+
+    @Override
+    public boolean isArestasAdjacentes(Aresta a, Aresta b) {
+        int v1 = a.getVerticeA();
+        int v2 = a.getVerticeB();
+        int w1 = b.getVerticeA();
+        int w2 = b.getVerticeB();
+        boolean adjV1W1 = isVerticesAdjacentes(v1, w1);
+        boolean adjV1W2 = isVerticesAdjacentes(v1, w2);
+        boolean adjV2W1 = isVerticesAdjacentes(v2, w1);
+        boolean adjV2W2 = isVerticesAdjacentes(v2, w2);
+        return (adjV1W1 && adjV2W2) || (adjV1W2 && adjV2W1);
+    }
+
+    @Override
+    public boolean isVerticeIncidente(Aresta e, int v) {
+        if (!this.isDirecionado) {
+            System.out.println("Método disponivel somente em grafos direcionados");
+            return false;
+        }
+        for (Aresta x : arestas) {
+            if (x.equals(e)) {
+                if (e.getVerticeB() == x.getVerticeB()) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public boolean isRegular() {
+        int grau = -1; // inicializa o grau com -1 para o primeiro vértice encontrado
+        for (int i = 0; i < numTotalVertices; i++) {
+            int grauAtual = 0;
+            // Calcula o grau do vértice atual
+            for (int j = 0; j < numTotalVertices; j++) {
+                int finalI = i;
+                int finalJ = j;
+                grauAtual += isDirecionado() ? (int) arestas.stream().filter(a -> a.getVerticeA() == finalI && a.getVerticeB() == finalJ).count() : isVerticesAdjacentes(i, j) ? 1 : 0;
+            }
+            // Verifica se o grau atual é igual ao grau do primeiro vértice encontrado
+            if (grau == -1) {
+                grau = grauAtual;
+            } else if (grau != grauAtual) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    @Override
+    public HashSet<Aresta> getArestas() {
+        return arestas;
     }
 }
