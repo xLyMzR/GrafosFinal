@@ -26,6 +26,7 @@ public class ListaAdj implements IGrafo {
         mapaVertices = new HashMap<>();
         arestas = new HashSet<>();
         this.adjacencyList = new ArrayList<>(i);
+
         inicializarVertices(i);
     }
 
