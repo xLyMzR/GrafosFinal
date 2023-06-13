@@ -3,6 +3,7 @@ package INTERFACE;
 import ELEMENTOS.Aresta;
 
 import java.util.HashSet;
+import java.util.List;
 
 public interface IGrafo {
 
@@ -12,6 +13,7 @@ public interface IGrafo {
      boolean isDirecionado();
 
      int getTotalVertices();
+
      int getTotalArestas();
      public boolean hasAresta(int v1, int v2);
      boolean hasVertice(int v);

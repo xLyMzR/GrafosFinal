@@ -6,7 +6,7 @@ import REPRESENTACOES.MatrizAdj;
 
 public class App {
 
-    private static final IGrafo grafoMatriz = new MatrizAdj(3, true);
+    private static final MatrizAdj grafoMatriz = new MatrizAdj(3, true);
     private static final ListaAdj grafoLista = new ListaAdj(6, true);
 
     private static void PopularGrafo() {
@@ -28,9 +28,13 @@ public class App {
         PopularGrafo();
         //SeiLa();
 
-        String filePath = "grafo.csv";
-        exportarGrafoCSV.exportarListaCSV(grafoLista, filePath);
-        System.out.println("Grafo salvo em " + filePath);
+        String arquivoListaCSV = "grafoLista.csv";
+        String arquivoMatrizCSV = "grafoMatriz.csv";
+
+        exportarGrafoCSV.exportarListaCSV(grafoLista, arquivoListaCSV);
+        exportarGrafoCSV.exportarMatrizCSV(grafoMatriz, arquivoMatrizCSV);
+
+        System.out.println("Grafo salvo em " + arquivoListaCSV);
     }
 
     private static void SeiLa(){

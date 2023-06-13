@@ -8,12 +8,6 @@ import java.io.IOException;
 
 public class exportarGrafoCSV {
 
-
-    public static void exportarParaCSV(IGrafo grafo){
-        grafo :
-
-    }
-
     public static void exportarListaCSV(ListaAdj grafo, String nomeArquivo) {
         try (FileWriter writer = new FileWriter(nomeArquivo)) {
             // Escrever cabeçalho do arquivo CSV
@@ -32,30 +26,35 @@ public class exportarGrafoCSV {
         }
     }
 
-    public static void exportarMatrizCSV(MatrizAdj grafo, String nomeArquivo) throws IOException {
-        FileWriter writer = new FileWriter(nomeArquivo);
-        writer.append("Vértices,");
-        for (int i = 0; i < grafo.getTotalVertices(); i++) {
-            writer.append("V" + i + ",");
-        }
-        writer.append("\n");
-
-        writer.append("Arestas,");
-        for (int i = 0; i < grafo.getTotalVertices(); i++) {
-            writer.append(",");
-        }
-        writer.append("\n");
-
-        for (int i = 0; i < grafo.getTotalVertices(); i++) {
-            writer.append("V" + i + ",");
-            for (int j = 0; j < grafo.getTotalVertices(); j++) {
-                writer.append(grafo.hasAresta(i, j) ? "1," : "0,");
+    public static void exportarMatrizCSV(MatrizAdj grafo, String nomeArquivo) {
+        try {
+            FileWriter writer = new FileWriter(nomeArquivo);
+            writer.append("Vértices,");
+            for (int i = 0; i < grafo.getTotalVertices(); i++) {
+                writer.append("V" + i + ",");
             }
             writer.append("\n");
-        }
 
-        writer.flush();
-        writer.close();
-        System.out.println("Grafo salvo em " + nomeArquivo + " com sucesso!");
+            writer.append("Arestas,");
+            for (int i = 0; i < grafo.getTotalVertices(); i++) {
+                writer.append(",");
+            }
+            writer.append("\n");
+
+            for (int i = 0; i < grafo.getTotalVertices(); i++) {
+                writer.append("V" + i + ",");
+                for (int j = 0; j < grafo.getTotalVertices(); j++) {
+                    writer.append(grafo.hasAresta(i, j) ? "1," : "0,");
+                }
+                writer.append("\n");
+            }
+
+            writer.flush();
+            writer.close();
+            System.out.println("Grafo salvo em " + nomeArquivo + " com sucesso!");
+        } catch (IOException e) {
+            System.out.println("Erro ao salvar o arquivo CSV.");
+            e.printStackTrace();
+        }
     }
 }
