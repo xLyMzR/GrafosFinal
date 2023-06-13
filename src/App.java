@@ -6,8 +6,8 @@ import REPRESENTACOES.MatrizAdj;
 
 public class App {
 
-    private static final MatrizAdj grafoMatriz = new MatrizAdj(3, true);
-    private static final ListaAdj grafoLista = new ListaAdj(6, true);
+    private static final MatrizAdj grafoMatriz = new MatrizAdj(4, true);
+    private static final ListaAdj grafoLista = new ListaAdj(4, true);
 
     private static void PopularGrafo() {
         for (int i = 0; i < grafoLista.getTotalVertices(); i++) {

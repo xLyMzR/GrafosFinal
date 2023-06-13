@@ -29,22 +29,20 @@ public class exportarGrafoCSV {
     public static void exportarMatrizCSV(MatrizAdj grafo, String nomeArquivo) {
         try {
             FileWriter writer = new FileWriter(nomeArquivo);
-            writer.append("Vértices,");
+
+            // Escrever os cabeçalhos das colunas
+
+            writer.append(" X|");
             for (int i = 0; i < grafo.getTotalVertices(); i++) {
-                writer.append("V" + i + ",");
+                writer.append("V" + i + "|");
             }
             writer.append("\n");
 
-            writer.append("Arestas,");
+            // Escrever as linhas do grafo
             for (int i = 0; i < grafo.getTotalVertices(); i++) {
-                writer.append(",");
-            }
-            writer.append("\n");
-
-            for (int i = 0; i < grafo.getTotalVertices(); i++) {
-                writer.append("V" + i + ",");
+                writer.append("V" + i + "|");
                 for (int j = 0; j < grafo.getTotalVertices(); j++) {
-                    writer.append(grafo.hasAresta(i, j) ? "1," : "0,");
+                    writer.append(grafo.hasAresta(i, j) ? " 1|" : " 0|");
                 }
                 writer.append("\n");
             }
