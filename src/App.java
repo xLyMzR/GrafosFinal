@@ -1,51 +1,62 @@
 import ELEMENTOS.Aresta;
-import ELEMENTOS.Vertice;
 import INTERFACE.IGrafo;
+import REPRESENTACOES.exportarGrafoCSV;
+import REPRESENTACOES.ListaAdj;
 import REPRESENTACOES.MatrizAdj;
-
-import javax.swing.*;
-import java.awt.font.GraphicAttribute;
 
 public class App {
 
-    private static final IGrafo grafo = new MatrizAdj(3, true);
+    private static final IGrafo grafoMatriz = new MatrizAdj(3, true);
+    private static final ListaAdj grafoLista = new ListaAdj(6, true);
+
+    private static void PopularGrafo() {
+        for (int i = 0; i < grafoLista.getTotalVertices(); i++) {
+            for (int j = 1; j < grafoLista.getTotalVertices(); j++) {
+                if (i != j) {
+                    grafoMatriz.addAresta(i, j);
+                    grafoMatriz.addAresta(j, i);
+
+                    grafoLista.addAresta(i, j);
+                    grafoLista.addAresta(j, i);
+                }
+            }
+        }
+    }
 
     public static void main(String[] args) {
 
-        for(int i =0; i<grafo.getTotalVertices(); i++){
-            for(int j =1; j<grafo.getTotalVertices(); j++){
-                if(i!=j) {
-                    grafo.addAresta(i, j);
-                    grafo.addAresta(j, i);
-                }
-                }
+        PopularGrafo();
+        //SeiLa();
 
-        }
+        String filePath = "grafo.csv";
+        exportarGrafoCSV.exportarListaCSV(grafoLista, filePath);
+        System.out.println("Grafo salvo em " + filePath);
+    }
 
-        /*System.out.println(grafo.isVerticeIncidente(e, 1));
-        grafo.getArestas().stream().map(x -> x.toString()).forEach(System.out::println);*/
+    private static void SeiLa(){
+         /*System.out.println(grafoMatriz.isVerticeIncidente(e, 1));
+        grafoMatriz.getArestas().stream().map(x -> x.toString()).forEach(System.out::println);*/
 
         //Buscar aresta / Adjacencia de vertices
-     //   System.out.println(grafo.isVerticesAdjacentes(2 ,1));
-        //ystem.out.println(grafo.isArestasAdjacentes(e, e2));
-        System.out.println(grafo.isCompleto());
-       // grafo.addAresta(e3.getVerticeA(), e3.getVerticeB());
-       // System.out.println("Add aresta 3, Completo?: "+grafo.isCompleto());
-        grafo.ponderarAresta(0, 1, 5);
-       // grafo.ponderarAresta(1, 0,10);
-        grafo.getArestas().stream().map(Aresta::toString).forEach(System.out::println);
-        System.out.println(grafo.isVerticesAdjacentes(0, 1));// -saida false
-        //System.out.println(grafo.isRegular());
-        grafo.ponderarAresta(0, 1, 10);
-        grafo.getArestas().stream().map(Aresta::toString).forEach(System.out::println);
-        grafo.rotularAresta(0, 1, "teste");
-        grafo.rotularAresta(1, 0 , "teste2");
-        System.out.println(grafo.getArestas().isEmpty());
-        grafo.getArestas().stream().map(Aresta::toString).forEach(System.out::println);
-        grafo.removerAresta(0,1);
-        grafo.rotularAresta(1,0, "Novo rotulo");
+        //   System.out.println(grafoMatriz.isVerticesAdjacentes(2 ,1));
+        //ystem.out.println(grafoMatriz.isArestasAdjacentes(e, e2));
+        System.out.println(grafoLista.isCompleto());
+        // grafoMatriz.addAresta(e3.getVerticeA(), e3.getVerticeB());
+        // System.out.println("Add aresta 3, Completo?: "+grafoMatriz.isCompleto());
+        grafoLista.ponderarAresta(0, 1, 5);
+        // grafoMatriz.ponderarAresta(1, 0,10);
+        grafoLista.getArestas().stream().map(Aresta::toString).forEach(System.out::println);
+        System.out.println(grafoLista.isVerticesAdjacentes(0, 1));// -saida false
+        //System.out.println(grafoMatriz.isRegular());
+        grafoLista.ponderarAresta(0, 1, 10);
+        grafoLista.getArestas().stream().map(Aresta::toString).forEach(System.out::println);
+        grafoLista.rotularAresta(0, 1, "teste");
+        grafoLista.rotularAresta(1, 0, "teste2");
+        System.out.println(grafoLista.getArestas().isEmpty());
+        grafoLista.getArestas().stream().map(Aresta::toString).forEach(System.out::println);
+        grafoLista.removerAresta(0, 1);
+        grafoLista.rotularAresta(1, 0, "Novo rotulo");
         System.out.println("Remoção da aresta 0,1: ");
-        grafo.getArestas().stream().map(Aresta::toString).forEach(System.out::println);
-
+        grafoLista.getArestas().stream().map(Aresta::toString).forEach(System.out::println);
     }
 }

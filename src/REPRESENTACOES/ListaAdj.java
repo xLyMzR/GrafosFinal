@@ -15,7 +15,7 @@ public class ListaAdj implements IGrafo {
     private int numTotalArestas;
     private boolean isCompleto;
     private final boolean isDirecionado;
-    private final List<List<Integer>> adjacencyList;
+    final List<List<Integer>> adjacencyList;
     private final HashMap<Integer, Vertice> mapaVertices;
     private final HashSet<Aresta> arestas;
 
