@@ -1,0 +1,1 @@
+typeSearchIndex = [{"l":"All Classes","u":"allclasses-index.html"},{"p":"<Unnamed>","l":"App"},{"p":"ELEMENTOS","l":"Aresta"},{"p":"REPRESENTACOES","l":"exportarGrafoCSV"},{"p":"INTERFACE","l":"IGrafo"},{"p":"REPRESENTACOES","l":"ListaAdj"},{"p":"REPRESENTACOES","l":"MatrizAdj"},{"p":"ELEMENTOS","l":"Vertice"}];updateSearchResults();
