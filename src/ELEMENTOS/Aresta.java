@@ -4,9 +4,25 @@ import java.lang.reflect.Array;
 import java.util.Objects;
 
 public class Aresta {
+
+    /**
+     * Vertice A
+     */
     private int verticeA;
+
+    /**
+     * Vertice B
+     */
     private int verticeB;
+
+    /**
+     * Peso da aresta
+     */
     private int peso;
+
+    /**
+     * Rotulo da aresta
+     */
     private String rotulo;
 
     public Aresta(int verticeA, int verticeB){
@@ -37,13 +53,26 @@ public class Aresta {
         this.rotulo = rotulo;
     }
 
+    /**
+     * Obtem o rotulo da aresta
+     * @return string
+     */
     public String getRotulo() {
         return rotulo;
     }
 
+    /**
+     * Obtem o peso da aresta
+     * @return int
+     */
     public int getPeso() {
         return peso;
     }
+
+    /**
+     * Obtem os vertices da aresta
+     * @return int
+     */
     public int [] getVertices(){
         int vertices[] = new int[2];
 
@@ -76,18 +105,34 @@ public class Aresta {
                 '}';
     }
 
+    /**
+     * Obtem o vertice A da aresta
+     * @return int
+     */
     public int getVerticeA() {
         return verticeA;
     }
 
+    /**
+     * Obtem o vertice B da aresta
+     * @return int
+     */
     public int getVerticeB() {
         return verticeB;
     }
 
+    /**
+     * Seta o peso da aresta
+     * @param peso
+     */
     public void setPeso(int peso) {
         this.peso = peso;
     }
 
+    /**
+     * Seta o rotulo da aresta
+     * @param rotulo
+     */
     public void setRotulo(String rotulo) {
         this.rotulo = rotulo;
     }
