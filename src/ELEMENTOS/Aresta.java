@@ -4,13 +4,10 @@ import java.lang.reflect.Array;
 import java.util.Objects;
 
 public class Aresta {
-
-    private int id;
     private int verticeA;
     private int verticeB;
     private int peso;
     private String rotulo;
-
 
     public Aresta(int verticeA, int verticeB){
         this.verticeA = verticeA;
@@ -85,14 +82,6 @@ public class Aresta {
 
     public int getVerticeB() {
         return verticeB;
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
     }
 
     public void setPeso(int peso) {
