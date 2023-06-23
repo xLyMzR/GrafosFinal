@@ -8,6 +8,11 @@ import java.io.IOException;
 
 public class exportarGrafoCSV {
 
+    /**
+     * Exporta o grafo em lista de adjacencia recebido como parametro para arquivo CSV
+     * @param grafo
+     * @param nomeArquivo
+     */
     public static void exportarListaCSV(ListaAdj grafo, String nomeArquivo) {
         try (FileWriter writer = new FileWriter(nomeArquivo)) {
             // Escrever cabeçalho do arquivo CSV
@@ -26,6 +31,11 @@ public class exportarGrafoCSV {
         }
     }
 
+    /**
+     * Exporta o grafo em matriz de adjacencia recebido como parametro para arquivo CSV
+     * @param grafo
+     * @param nomeArquivo
+     */
     public static void exportarMatrizCSV(MatrizAdj grafo, String nomeArquivo) {
         try {
             FileWriter writer = new FileWriter(nomeArquivo);
